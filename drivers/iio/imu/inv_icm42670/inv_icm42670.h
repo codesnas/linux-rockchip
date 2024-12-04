@@ -166,6 +166,28 @@
 #define BIT_ACCEL_UI_FS_SEL_MASK	GENMASK(6, 5)
 #define BIT_ACCEL_ODR_MASK			GENMASK(3, 0)
 
+/*
+ * GYRO_CONFIG1
+ * Register Name : GYRO_CONFIG1
+ */
+
+/*
+ * gyro_ui_filt_bw
+ * Selects GYRO UI low pass filter bandwidth
+ *
+ * 000: Low pass filter bypassed
+ * 001: 180 Hz
+ * 010: 121 Hz
+ * 011: 73 Hz
+ * 100: 53 Hz
+ * 101: 34 Hz
+ * 110: 25 Hz
+ * 111: 16 Hz
+ *
+ * This field can be changed on-the-fly even if gyro sensor is on
+ */
+#define GYRO_CONFIG1_GYRO_UI_FILT_BW_MASK	0x07
+
 /* Bank0 REG_GYRO_CONFIG1 */
 #define BIT_GYR_UI_FLT_BW_BYPASS		0x00
 #define BIT_GYR_UI_FLT_BW_180HZ			0x01
@@ -181,6 +203,23 @@
 #define BIT_GYR_UI_AVG_IND_16X			0x30
 #define BIT_GYR_UI_AVG_IND_32X			0x40
 #define BIT_GYR_UI_AVG_IND_64X			0x50
+
+/*
+ * accel_ui_filt_bw
+ * Selects ACCEL UI low pass filter bandwidth
+ *
+ * 000: Low pass filter bypassed
+ * 001: 180 Hz
+ * 010: 121 Hz
+ * 011: 73 Hz
+ * 100: 53 Hz
+ * 101: 34 Hz
+ * 110: 25 Hz
+ * 111: 16 Hz
+ *
+ * This field can be changed on-the-fly even if accel sensor is on
+ */
+#define ACCEL_CONFIG1_ACCEL_UI_FILT_BW_MASK	0x07
 
 /* Bank0 REG_ACCEL_CONFIG1 */
 #define BIT_ACC_FILT_BW_IND_BYPASS		0x00
