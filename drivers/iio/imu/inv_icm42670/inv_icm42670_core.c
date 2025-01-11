@@ -1071,6 +1071,11 @@ int icm42670_core_probe(struct regmap *regmap,
 		return -EINVAL;
 	}
 
+	if (device_property_read_bool(dev, "drive-open-drain"))
+		data->irq_mask |= BIT_ONLY_INT1_OPEN_DRAIN;
+	else
+		data->irq_mask |= BIT_ONLY_INT1_PUSH_PULL;
+
 	data->vdd_supply = devm_regulator_get(dev, "vcc_3v3_s0");
 	if (IS_ERR(data->vdd_supply)) {
 		dev_err(dev, "Could not find vdd_avdd!\n");
