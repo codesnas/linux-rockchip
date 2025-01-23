@@ -1081,19 +1081,31 @@ static void destroy_buf_queue(struct rkvpss_stream *stream,
 {
 	unsigned long lock_flags = 0;
 	struct rkvpss_buffer *buf;
+	LIST_HEAD(queue_local_list);
+	LIST_HEAD(done_local_list);
 
 	spin_lock_irqsave(&stream->vbq_lock, lock_flags);
 	if (stream->curr_buf) {
 		list_add_tail(&stream->curr_buf->queue, &stream->buf_queue);
 		stream->curr_buf = NULL;
 	}
-	while (!list_empty(&stream->buf_queue)) {
-		buf = list_first_entry(&stream->buf_queue, struct rkvpss_buffer, queue);
+	list_replace_init(&stream->buf_queue, &queue_local_list);
+	list_replace_init(&stream->buf_done_list, &done_local_list);
+	spin_unlock_irqrestore(&stream->vbq_lock, lock_flags);
+
+	while (!list_empty(&queue_local_list)) {
+		buf = list_first_entry(&queue_local_list, struct rkvpss_buffer, queue);
 		list_del(&buf->queue);
 		buf->vb.vb2_buf.synced = false;
 		vb2_buffer_done(&buf->vb.vb2_buf, state);
 	}
-	spin_unlock_irqrestore(&stream->vbq_lock, lock_flags);
+
+	while (!list_empty(&done_local_list)) {
+		buf = list_first_entry(&done_local_list, struct rkvpss_buffer, queue);
+		list_del(&buf->queue);
+		buf->vb.vb2_buf.synced = false;
+		vb2_buffer_done(&buf->vb.vb2_buf, state);
+	}
 }
 
 static int rkvpss_stream_crop(struct rkvpss_stream *stream, bool on, bool sync)
